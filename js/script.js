@@ -1,6 +1,7 @@
 'use strict';
 
 const titleClickHandler = function(event){
+    event.preventDefault();
     const clickedElement = this;
     console.log('Link was clicked!');
 
@@ -10,12 +11,11 @@ const titleClickHandler = function(event){
         activeLink.classList.remove('active');
     }
 
-    /* [In Progress] add class 'active' to the clicked link */
+    /* [Done] add class 'active' to the clicked link */
     clickedElement.classList.add('active');
-    console.log('clickedElement:', clickedElement);
 
     /* [Done] remove class 'active' from all articles */
-    const activeArticles = document.querySelectorAll('.posts article.active');
+    const activeArticles = document.querySelectorAll('.post.active');
     for(let activeArticle of activeArticles){
         activeArticle.classList.remove('active');
     }
@@ -23,14 +23,48 @@ const titleClickHandler = function(event){
     /* get 'href' attribute from the clicked link */
     const articleSelector = clickedElement.getAttribute('href');
 
-    /* find the correct article using the selector (value of 'href' attribute) */
-
+    /* find the correct article using the selector */
     const targetArticle = document.querySelector(articleSelector);
 
     /* add class 'active' to the correct article */
-    
-    targetArticle.classList.add('active');
+    if(targetArticle) {
+        targetArticle.classList.add('active');
+    }
 };
+
+const optArticleSelector = '.post',
+    optTitleSelector = '.post-title',
+    optTitleListSelector = '.titles';
+
+function generateTitleLinks() {
+    /* remove contents from the titleList */
+    const titleList = document.querySelector(optTitleListSelector);
+    titleList.innerHTML = '';
+
+    /* for each article */
+    const articles = document.querySelectorAll(optArticleSelector);
+
+    let html = '';
+
+    for (let article of articles) {
+        /* get the article id */
+        const articleId = article.getAttribute('id');
+
+        /* find the title element and get the title */
+        const articleTitle = article.querySelector(optTitleSelector).innerHTML;
+
+        /* create HTML of the link */
+        const linkHTML = '<li><a href="#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+
+        /* add to HTML string */
+        html += linkHTML;
+    }
+
+    /* insert all links at once */
+    titleList.innerHTML = html;
+}
+
+generateTitleLinks();
 
 const links = document.querySelectorAll('.titles a');
 for(let link of links){
